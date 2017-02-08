@@ -1,0 +1,9 @@
+Yocto environment for building raspberry pi images. 
+
+1) Install required dependencies for yocto to run bitbake https://www.yoctoproject.org/docs/1.8/yocto-project-qs/yocto-project-qs.html
+
+2) Check out the code and initialize submodules
+
+3) Run the init script to set u your workspace
+
+4) create your first image with bitbake rpi-basic-image 
