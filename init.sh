@@ -5,7 +5,10 @@
 WORK=$1
 # The directory where we are going to run the build
 BUILD="$1/conf"
-#
+# Where our poky directory is found
+POKY="$PWD/poky"
+# Where the local conf is found
+CONF="$PWD/conf"
 
 # Check that a workspace has been given
 if [ -z "$WORK" -a "$WORK" != " " ]; then
@@ -19,36 +22,24 @@ if [ ! -d $WORK ]; then
 	mkdir -p $WORK
 fi
 
-# Create symlink to our build conf
-if [ -d $BUILD ]; then
-	echo "$BUILD already exists"
-else
-	echo "Creating symlink to build directory on $BUILD"
-	ln -s $PWD/build-conf $BUILD
+# Check that the poky direcctory exists
+if [ ! -d $POKY ]; then
+	echo "$POKY directory not found, are you sure you have intialized all 
+			gitsubmodules in this repo?"
+	exit
 fi
 
-# Symlink to layer
-if [ -d $WORK/poky ]; then
-	echo "$WORK/yocto already exists"
-else
-	echo "Creating symlink to layer $WORK/yocto"
-	ln -s $PWD/poky $WORK/poky
+# Check that the conf directory exists
+if [ ! -d $CONF ]; then
+	echo "$CONF directory not found, are you sure you have intialized all 
+			gitsubmodules in this repo?"
+	exit
 fi
 
-# Symlink to layer
-if [ -d $WORK/meta-openembedded ]; then
-	echo "$WORK/meta-openembedded already exists"
-else
-	echo "Creating symlink to layer $WORK/meta-openembedded"
-	ln -s $PWD/meta-openembedded $WORK/meta-openembedded
-fi
-
-# Symlink to layer
-if [ -d $WORK/meta-raspberrypi ]; then
-	echo "$WORK/meta-raspberrypi already exists"
-else
-	echo "Creating symlink to layer $WORK/meta-raspberrypi"
-	ln -s $PWD/meta-raspberrypi $WORK/meta-raspberrypi
-fi
+# Change the .templateconf in poky to always find our sample configurations, if
+# we want to upgrade poky in git, we just have to disard changes in this submodule
+echo "##### Modified by the init.sh script, if you want to upgrde poky, do so ######
+##### by discardig changes done to this file in git                           ######
+TEMPLATECONF=\${TEMPLATECONF:-$CONF}" > $POKY/.templateconf
 
 source poky/oe-init-build-env $WORK
